@@ -10,30 +10,114 @@
 <body>
     <main>
         <section>
-            <h1>TESTE</h1>
+            <div id="header"></div>
+            <h1>Atestado de Treinamento</h1>
             <br>
-            <form action="/generate_document" method="post"> <!--O Action é responsável por comunicar com o flask. O post envia as informações-->
-                <label for="subject">Assunto</label>
-                <input list="subject" type="search" name="subject" required> 
-                <datalist id="subject">
-                    <option value="Compras & Licitações">Compras e Licitações</option>
-                    <option value="Contabilidade">Contabilidade</option>
-                    <option value="Diário">Diário Razão</option>
-                </datalist>
-                <br>
+            <form action="/generate_document" method="post">
+                <div class="campo">
+                    <label for="colaborador">Colaborador</label>
+                    <input type="text" id="colaborador" name="colaborador" required>
+                    <br>
+                </div>
 
-                <label for="name">Nome</label>
-                <input type="text" id="name" name="name" required>
-                <br>
+                <div class="campo">
+                    <label for="subject">Assunto</label>
+                    <input list="subject" type="search" name="subject" required> 
+                    <datalist id="subject">
+                        <option value="Compras & Licitações">Compras e Licitações</option>
+                        <option value="Contabilidade">Contabilidade</option>
+                        <option value="Diário">Diário Razão</option>
+                    </datalist>
+                    <br>
+                </div>
+
+                <div class="campo">
+                    <label for="descricao">Sobre o Atendimento</label>
+                    <textarea name="descricao"></textarea>
+                </div>
+
+                <div class="campo">
+                    <label for="name">Servidor</label>
+                    <input type="text" id="name" name="name" required>
+                    <br>
+                </div>
+
+                <div class="campo">
+                    <label for="cpf">CPF</label>
+                    <input type="number" id="cpf" name="cpf" pattern="[0-9]+" required>
+                    <br>
+                </div>
     
-                <label for="area">Setor</label>
-                <input type="text" id="area" name="area" required>
-                <br>
+                <div class="campo">
+                    <label for="area">Setor</label>
+                    <input type="text" id="area" name="area" required>
+                    <br>
+                </div>
 
-                <input type="submit" value="Gerar Atestado" id="submit">
+                <div id="extraFields"></div>
+
+                <div id="botoes">
+                    <button type="button" onclick="addFields()" class="botao">+</button>
+                    <input type="submit" value="Gerar Atestado" id="submit" class="botao">
+                </div>
             </form>
         </section>
     </main>
+
+    <script>
+        var fieldCounter = 0;
+
+        function addFields() {
+            var extraFieldsContainer = document.getElementById('extraFields');
+
+            var campoDiv = document.createElement('div');
+            campoDiv.appendChild(document.createElement('br'));
+            campoDiv.classList.add('campo'); // Adicione esta linha
+
+            var nameLabel = document.createElement('label');
+            nameLabel.setAttribute('for', 'name' + fieldCounter);
+            nameLabel.textContent = 'Servidor';
+            campoDiv.appendChild(nameLabel);
+
+            var nameInput = document.createElement('input');
+            nameInput.setAttribute('type', 'text');
+            nameInput.setAttribute('name', 'name' + fieldCounter);
+            nameInput.required = true;
+            campoDiv.appendChild(nameInput);
+
+            campoDiv.appendChild(document.createElement('br'));
+            
+            var cpfLabel = document.createElement('label');
+            cpfLabel.setAttribute('for', 'cpf' + fieldCounter);
+            cpfLabel.textContent = 'CPF';
+            campoDiv.appendChild(cpfLabel);
+
+            var cpfInput = document.createElement('input');
+            cpfInput.setAttribute('type', 'text');
+            cpfInput.setAttribute('name', 'cpf' + fieldCounter);
+            cpfInput.required = true;
+            campoDiv.appendChild(cpfInput);
+            
+            campoDiv.appendChild(document.createElement('br'));
+
+            var areaLabel = document.createElement('label');
+            areaLabel.setAttribute('for', 'area' + fieldCounter);
+            areaLabel.textContent = 'Setor';
+            campoDiv.appendChild(areaLabel);
+
+            var areaInput = document.createElement('input');
+            areaInput.setAttribute('type', 'text');
+            areaInput.setAttribute('name', 'area' + fieldCounter);
+            areaInput.required = true;
+            campoDiv.appendChild(areaInput);
+
+            campoDiv.appendChild(document.createElement('br'));
+
+            extraFieldsContainer.appendChild(campoDiv);
+
+            fieldCounter++;
+        }
+    </script>
 </body>
 </html>
 
@@ -44,44 +128,84 @@
         font-family: 'Poppins', sans-serif;
     }
 
-    main {
+    *::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: #6a6968;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background-color: #ffffff;
+        border-radius: 20px;
+        border: 3px solid #ffffff;
+    }
+
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: rgb(248,148,51);
+        background: radial-gradient(circle, rgba(248,148,51,1) 0%, rgba(181,136,92,1) 100%);
         display: flex;
+        flex-direction: column;
+    }
+
+    main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
         width: 100%;
-        height: 100vh;
+        height: auto;
         align-items: center;
         justify-content: center;
+
+        background-color: #E8E8EA;
+        background-image: url("../static/BKG.jpg");
+        background-position: bottom;
+        background-size: cover;
+        background-repeat: no-repeat;
+        /* background: rgb(248,148,51);
+        background: radial-gradient(circle, rgba(248,148,51,1) 0%, rgba(181,136,92,1) 100%); */
     }
 
     section {
         display: flex;
-        height: 45%;
+        height: 120%;
         min-width: 20vw;
         align-items: center;
         flex-direction: column;
         align-content: center;
-        justify-content: center;
-        background-color: #E8E8EA;/*#F79633;*/
-        border-radius: 10px;
+        justify-content: flex-start;
+        background-color: #e8e8eab0;
+    }
+
+    #header {
+        background-image: url("../static/logo.png");
+        background-size: cover;
+        background-position: center;
+        height: 10vh;
+        width: 10vh;
+        margin-top: 5vh;
+        margin-bottom: 2vh;
     }
 
     section h1 {
         text-align: center;
         font-size: auto;
-        width: 30vh;
+        width: 100%;
         margin-bottom: 3px;
-        border-bottom: 2px solid #a0a0a535;
+        border-bottom: 1px solid #a0a0a535;
         color: #F79633;
+        white-space: nowrap;
+        text-align: center;
     }
 
     form {
         display: flex;
         flex-direction: column;
-    }
-
-    form label {
-        font-weight: bold;
-        font-size: large;
-        color: #F79633;
+        width: 100%
     }
 
     form input {
@@ -93,16 +217,59 @@
         background-color: #ffffff;
     }
 
-    form #submit {
+    form button {
+        border: none;
+        width: 5vh;
+    }
+
+    form .campo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: none;
+    }
+
+    .campo textarea {
+        resize: none;
+        width: 35vh;
+        height: 15vh;
+        border-radius: 10px;
+        border: none;
+        padding-left: 5px;
+        margin-bottom: 2vh 
+    }
+
+    .campo label {
+        font-weight: bold;
+        font-size: large;
+        width: 85%;
+        color: #F79633;
+        text-align: left;
+    }
+
+    #botoes {
+        display: flex;
+        width: 100%;
+        flex-direction: row-reverse;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1.5vh
+    }
+
+    .botao {
         background-color: #606062;
         color: white;
+        border: none;
         border-radius: 20px;
+        width: auto;
         height: 5vh;
         cursor: pointer;
         transition: background-color 0.5s linear;
+        margin-left: 5px;
+        padding: 1.5vh;
     }
     
-    form #submit:hover {
+    .botao:hover {
         background-color: #F79633;
         color: rgb(72, 69, 69);
         cursor: pointer;
