@@ -3,8 +3,11 @@ from docx import Document
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.shared import Pt
 from docx.shared import Inches
-import subprocess
 import datetime
+
+def format_cpf(cpf):
+    cpf = cpf.zfill(11)  # Preenche com zeros à esquerda até ter 11 dígitos
+    return f"{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}"
 
 app = Flask(__name__)
 
@@ -23,7 +26,7 @@ def generate_document():
     # Cria o documento e escreve o mesmo
     document = Document()
     header = document.sections[0].header
-    htable = header.add_table(1, 1, width=Inches(12))
+    htable = header.add_table(1, 1, width=Inches(8))
     htab_cells = htable.rows[0].cells
     ht0 = htab_cells[0].add_paragraph()
     kh = ht0.add_run()
@@ -41,7 +44,7 @@ def generate_document():
 
     # Adiciona a seção de informações
     info_paragraph = document.add_paragraph()
-    info_paragraph.add_run(f"A(O) {entidade.title()}, ")
+    info_paragraph.add_run(f"A entidade {entidade.title()}, ")
     info_paragraph.add_run("atesta para os devidos fins, que a ")
     info_paragraph.add_run("Empresa Amendola & Amendola Software Ltda").bold = True
     info_paragraph.add_run(f", inscrita no CNPJ nº 04.326.049/0001-90, realizou visita técnica nesta entidade na data de  ")
@@ -53,7 +56,8 @@ def generate_document():
     for key, value in request.form.items():
         if key.startswith('name'):
             index = key.replace('name', '')
-            field = {'name': value, 'area': request.form.get('area' + index), 'cpf': request.form.get('cpf' + index)}
+            cpf = request.form.get('cpf' + index)
+            field = {'name': value, 'area': request.form.get('area' + index), 'cpf': format_cpf(cpf), 'cargo': request.form.get('cargo' + index)}
             fields.append(field)
     
     p_colaborador = document.add_paragraph()
@@ -65,17 +69,15 @@ def generate_document():
     p_assunto.add_run(subject)
     # document.add_paragraph() 
 
-
-
     document.add_heading('Descrição do Atendimento Prestado', level=1)
     document.add_paragraph(descricao)
 
     # Insere os campos dinâmicos no documento
     document.add_heading('Servidores', level=1)
     for field in fields:
-        p_name = document.add_paragraph()
-        p_name.add_run('Nome: ').bold = True
-        p_name.add_run(field['name'])
+        p_area = document.add_paragraph()
+        p_area.add_run('Nome: ').bold = True
+        p_area.add_run(field['name'])
 
         p_area = document.add_paragraph()
         p_area.add_run('cpf: ').bold = True
@@ -84,6 +86,10 @@ def generate_document():
         p_area = document.add_paragraph()
         p_area.add_run('Setor: ').bold = True
         p_area.add_run(field['area'])
+
+        p_area = document.add_paragraph()
+        p_area.add_run('Cargo: ').bold = True
+        p_area.add_run(field['cargo'])
         
 
         p_assinatura = document.add_paragraph()
@@ -92,15 +98,13 @@ def generate_document():
         document.add_paragraph()  # Adicione uma nova linha em branco entre cada conjunto de campos
 
     # Adiciona os campos de assinatura centralizados
-    document.add_paragraph()
-    p_assinatura_prefeitura = document.add_paragraph()
-    p_assinatura_prefeitura.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-    p_assinatura_prefeitura.add_run("________________________________")
-    p_assinatura_prefeitura.add_run(f"\n{entidade.upper()}").bold = True
-    p_assinatura_prefeitura.add_run("\n(NOME SERVIDOR RESPONSAVEL PELO SETOR)")
-    p_assinatura_prefeitura.add_run("\n(FUNÇÃO SERVIDOR)")
-
-    document.add_paragraph()
+    # document.add_paragraph()
+    # p_assinatura_prefeitura = document.add_paragraph()
+    # p_assinatura_prefeitura.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    # p_assinatura_prefeitura.add_run("________________________________")
+    # p_assinatura_prefeitura.add_run(f"\n{entidade.upper()}").bold = True
+    # p_assinatura_prefeitura.add_run("\n(NOME SERVIDOR RESPONSAVEL PELO SETOR)")
+    # p_assinatura_prefeitura.add_run("\n(FUNÇÃO SERVIDOR)")
 
     p_assinatura_empresa = document.add_paragraph()
     p_assinatura_empresa.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
@@ -114,7 +118,6 @@ def generate_document():
     document.save(temp_file)
 
 
-
     # Baixa no navegador
     response = make_response(send_file(temp_file, mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document'))
     response.headers.set('Content-Disposition', 'attachment', filename='document.docx')
@@ -123,6 +126,6 @@ def generate_document():
     # Abre o documento
     # subprocess.Popen(['start', temp_file], shell=True)
 
-    return 'Documento gerado com sucesso!'
+    # return 'Documento gerado com sucesso!'
 if __name__ == '__main__':
     app.run(host="0.0.0.0")

@@ -60,6 +60,12 @@
                     <br>
                 </div>
 
+                <div class="campo">
+                    <label for="cargo">Cargo</label>
+                    <input type="text" id="cargo" name="cargo" required>
+                    <br>
+                </div>
+
                 <div id="extraFields"></div>
 
                 <div id="botoes">
@@ -116,6 +122,19 @@
             areaInput.setAttribute('name', 'area' + fieldCounter);
             areaInput.required = true;
             campoDiv.appendChild(areaInput);
+
+            campoDiv.appendChild(document.createElement('br'));
+            
+            var cargoLabel = document.createElement('label');
+            cargoLabel.setAttribute('for', 'cargo' + fieldCounter);
+            cargoLabel.textContent = 'Cargo';
+            campoDiv.appendChild(cargoLabel);
+
+            var cargoInput = document.createElement('input');
+            cargoInput.setAttribute('type', 'text');
+            cargoInput.setAttribute('name', 'cargo' + fieldCounter);
+            cargoInput.required = true;
+            campoDiv.appendChild(cargoInput);
 
             campoDiv.appendChild(document.createElement('br'));
 
