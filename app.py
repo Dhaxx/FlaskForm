@@ -117,14 +117,13 @@ def generate_document():
     temp_file = 'temp.docx'
     document.save(temp_file)
 
+    # Abre o documento
+    # subprocess.Popen(['start', temp_file], shell=True)
 
     # Baixa no navegador
     response = make_response(send_file(temp_file, mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document'))
     response.headers.set('Content-Disposition', 'attachment', filename='document.docx')
     return response
-
-    # Abre o documento
-    # subprocess.Popen(['start', temp_file], shell=True)
 
     # return 'Documento gerado com sucesso!'
 if __name__ == '__main__':
