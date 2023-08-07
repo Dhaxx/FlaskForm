@@ -22,6 +22,8 @@ def generate_document():
     colaborador = request.form.get('colaborador')
     descricao = request.form.get("descricao")
     entidade = request.form.get("entidade")
+    data_inicio = request.form.get("dataInicio")
+    data_final = request.form.get("dataFinal")
 
     # Cria o documento e escreve o mesmo
     document = Document()
@@ -39,16 +41,16 @@ def generate_document():
     title_run.bold = True
     title_run.font.size = Pt(20)
 
-    data_atual = datetime.datetime.now()
-    data_formatada = data_atual.strftime("%d/%m/%Y") 
+    data_inicio_formatada = data_inicio[8:] + '/' + data_inicio[5:7] + '/' + data_inicio[:4]
+    data_final_formatada = data_final[8:] + '/' + data_final[5:7] + '/' + data_final[:4]
 
     # Adiciona a seção de informações
     info_paragraph = document.add_paragraph()
     info_paragraph.add_run(f"A entidade {entidade.title()}, ")
     info_paragraph.add_run("atesta para os devidos fins, que a ")
     info_paragraph.add_run("Empresa Amendola & Amendola Software Ltda").bold = True
-    info_paragraph.add_run(f", inscrita no CNPJ nº 04.326.049/0001-90, realizou visita técnica nesta entidade na data de  ")
-    info_paragraph.add_run(f"{data_formatada}, ").bold = True
+    info_paragraph.add_run(f", inscrita no CNPJ nº 04.326.049/0001-90, realizou visita técnica nesta entidade com início em ")
+    info_paragraph.add_run(f"{data_inicio_formatada} até {data_final_formatada} ").bold = True
     info_paragraph.add_run("conforme informações abaixo:")
 
     # Insere os campos dinâmicos no documento
@@ -96,15 +98,6 @@ def generate_document():
         p_assinatura.add_run("Assinatura: ").bold = True
         p_assinatura.add_run("________________________________")
         document.add_paragraph()  # Adicione uma nova linha em branco entre cada conjunto de campos
-
-    # Adiciona os campos de assinatura centralizados
-    # document.add_paragraph()
-    # p_assinatura_prefeitura = document.add_paragraph()
-    # p_assinatura_prefeitura.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-    # p_assinatura_prefeitura.add_run("________________________________")
-    # p_assinatura_prefeitura.add_run(f"\n{entidade.upper()}").bold = True
-    # p_assinatura_prefeitura.add_run("\n(NOME SERVIDOR RESPONSAVEL PELO SETOR)")
-    # p_assinatura_prefeitura.add_run("\n(FUNÇÃO SERVIDOR)")
 
     p_assinatura_empresa = document.add_paragraph()
     p_assinatura_empresa.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
